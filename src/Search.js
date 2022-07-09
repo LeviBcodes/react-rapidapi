@@ -3,6 +3,7 @@ import './index.css';
 import App from "./App";
 import Movie from "./Movie";
 import { Routes, Route, Link, BrowserRouter } from 'react-router-dom';
+import axios from 'axios';
 
 function Search() {
     const[t, setTitle] = useState('');
@@ -10,18 +11,20 @@ function Search() {
     const[finalPoint, setFinalPoint] = useState('');
     const[movie, setMovie] = useState([]);
     const api = "http://www.omdbapi.com/?apikey=a619790";
+    const img = "http://img.omdbapi.com/?apikey=a619790";
   
     const onChangeTitle = (e) => {
       setTitle(e.target.value);
     }
     
     const fetchMe = () => {
-      fetch(`${api}&s=${t}`)
-      .then(response => { return response.json();})
-      .then(data => {setContainer(data)})
-      .then(console.log(container))
-      
-      .catch(err => console.error(err));
+      axios.get(`${api}&s=${t}`)
+        .then(res => {
+          setContainer(res.data);
+        })
+        .catch(err => {
+          console.log(err);
+        })
     }
     
     useEffect(() => {
@@ -40,15 +43,25 @@ function Search() {
         </form>
         {container.Search && container.Search.map((item, index) => {
             const fetchMovie = () => {
-            fetch(`${api}&t=${item.Title}`)
-            .then(response => { return response.json();})
-            .then(data => {setMovie(data)})
+            axios.get(`${api}&i=${item.imdbID}`)
+            .then(res => {
+              setMovie(res.data);
+            })
             .then(console.log(movie))
-            .catch(err => console.error(err));
-
-            Object.keys(movie).length > 0 && Object.keys(movie).map((key) => {
-                if(key === 'Poster'){
-                }
+            .catch(err => {
+              console.log(err);
+            })
+            
+            let movies = Object.entries(movie).length > 0 && Object.entries(movie).map(([key, value]) => { 
+              if(key === "Ratings") {
+                return value.map((item, index) => {
+                  return item.Source + ": " + item.Value
+                })
+              }
+              if(key === "Poster") {
+                return <img src={`${img}&i=${item.imdbID}`} alt="poster" />
+              }
+              console.log(key, value)
             })
           }
           return(

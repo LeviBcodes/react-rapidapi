@@ -4,9 +4,8 @@ import App from "./App";
 import Search from "./Search";
 
 
-function Movie({match}) {
-    <div className="py-10">
-    </div>
+const Movie = (movie) => {
+    console.log("hello from movie");
 }
 
 export default Movie;

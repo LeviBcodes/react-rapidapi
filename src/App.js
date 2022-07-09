@@ -8,12 +8,12 @@ function App() {
   
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route exact path="/" element={<Search />}/>
-        <Route exact path="/movie/:id" element={<Movie />}/>
-      </Routes>
-    </BrowserRouter>
+    <Search />
+    // <BrowserRouter>
+    //   <Routes>
+    //     <Route exact path="/" element={<Search />}/>
+    //   </Routes>
+    // </BrowserRouter>
   )
 }
 
