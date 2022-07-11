@@ -6,9 +6,11 @@ import { Routes, Route, Link, BrowserRouter } from 'react-router-dom';
 import axios from 'axios';
 
 function Search() {
-    const[t, setTitle] = useState('');
+    const[title, setTitle] = useState('');
+    const[key, setKey] = useState(0);
     const[container, setContainer] = useState([]);
     const[finalPoint, setFinalPoint] = useState('');
+    const[isLoading, setIsLoading] = useState(false);
     const[movie, setMovie] = useState([]);
     const api = "http://www.omdbapi.com/?apikey=a619790";
     const img = "http://img.omdbapi.com/?apikey=a619790";
@@ -17,8 +19,8 @@ function Search() {
       setTitle(e.target.value);
     }
     
-    const fetchMe = () => {
-      axios.get(`${api}&s=${t}`)
+    const search = () => {
+      axios.get(`${api}&s=${title}`)
         .then(res => {
           setContainer(res.data);
         })
@@ -28,53 +30,35 @@ function Search() {
     }
     
     useEffect(() => {
-      fetchMe()
+      search()
     }, [finalPoint])
   
     const onSubmitHandler = (e) => {
       e.preventDefault();
-      setFinalPoint(t);
+      setFinalPoint(title);
     }
+
+    
+    
     return (
-        <div className="text-center">
+        <div className="w-screen h-screen">
         <form action="">
-          <input type="text" value={t} onChange={onChangeTitle} />
-          <button type="submit" onClick={onSubmitHandler}>Submit</button>
+        <button type="submit" className="absolute right-0 top-0 mt-5 mr-4" onClick={onSubmitHandler}>
+        </button>
+          <div className="w-full h-full flex justify-center items-center">
+            <input type="text" value={title} onChange={onChangeTitle} placeholder="Get the MovieDeets"
+                className="w-96 px-3 py-2 rounded-tl-full rounded-bl-full border-0 focus:outline-0" />
+            <button type="submit" className="px-3 py-2 -ml-1.5 bg-green-500 hover:bg-green-600 text-white rounded-tr-full rounded-br-full">Search</button>
+          </div>
         </form>
         {container.Search && container.Search.map((item, index) => {
-            const fetchMovie = () => {
-            axios.get(`${api}&i=${item.imdbID}`)
-            .then(res => {
-              setMovie(res.data);
-            })
-            .then(console.log(movie))
-            .catch(err => {
-              console.log(err);
-            })
-            
-            let movies = Object.entries(movie).length > 0 && Object.entries(movie).map(([key, value]) => { 
-              if(key === "Ratings") {
-                return value.map((item, index) => {
-                  return item.Source + ": " + item.Value
-                })
-              }
-              if(key === "Poster") {
-                return <img src={`${img}&i=${item.imdbID}`} alt="poster" />
-              }
-              console.log(key, value)
-            })
-          }
           return(
-            <div key={index} className="pt-5">
-                <button type="submit" onClick={fetchMovie}>
-                    {item.Title}
-                    <img src={item.Poster} alt="" />
-                    <p>{item.Year}</p>
-                </button>
+            <div key={item.imdbID} className="pt-5 h-screen">
+              <Movie imdbID={item.imdbID} />
             </div>
           )
         })}
-        <div>showing {container.Search && container.Search.length} of {container.totalResults} results</div>
+        {container.Search && <div className='text-white text-center'>Displaying {container.Search.length} of {container.totalResults} results</div>}
       </div>
     )
 
