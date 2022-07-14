@@ -8,8 +8,10 @@ import axios from "axios";
 const Movie = (props) => {
     const movieID = props.imdbID;
     const[movie, setMovie] = useState([]);
+    const[isLoading, setIsLoading] = useState(false);
+    const api = "http://www.omdbapi.com/?apikey=a619790";
     useEffect(() => {
-        axios.get(`http://www.omdbapi.com/?apikey=a619790&i=${movieID}&Plot=full`)
+        axios.get(`${api}&i=${movieID}&Plot=full`)
         .then(res => {
             setMovie(res.data);
         })
@@ -19,26 +21,28 @@ const Movie = (props) => {
     }
     , [])
 
+    const showDetails = () => {
+        setIsLoading(true);
+    }
+
     return(
-        console.log(movie),
-        <div className="w-screen h-screen rounded shadow-lg bg-black justify-center">
-            <div className="container mx-auto">
-            {movie.Poster && <img src={`${movie.Poster}`} alt="poster" className="w-1/4 h=1/3 mx-auto"/>}
-            {movie.Title && <h1 className="text-white text-center">{movie.Title}</h1>}
-            {movie.Year && <h2 className="text-white text-center">{movie.Year}</h2>}
-            {movie.Plot && <p className="text-white text-center">{movie.Plot}</p>}
-            {movie.Actors && <p className="text-white text-center">{movie.Actors}</p>}
-            {movie.Director && <p className="text-white text-center">{movie.Director}</p>}
-            {movie.Writer && <p className="text-white text-center">{movie.Writer}</p>}
-            {movie.Awards && <p className="text-white text-center">{movie.Awards}</p>}
-            {movie.Production && <p className="text-white text-center">{movie.Production}</p>}
-            {movie.BoxOffice && <p className="text-white text-center">{movie.BoxOffice}</p>}
-            {movie.imdbRating && <p className="text-white text-center">{movie.imdbRating}</p>}
-            {movie.imdbVotes && <p className="text-white text-center">{movie.imdbVotes}</p>}
-            {movie.imdbID && <p className="text-white text-center">{movie.imdbID}</p>}
-            {movie.Type && <p className="text-white text-center">{movie.Type}</p>}
-            {movie.Production && <p className="text-white text-center">{movie.Production}</p>}
-            {movie.Website && <p className="text-white text-center">{movie.Website}</p>}
+        <div className="">
+            {movie.Poster && <img src={`${movie.Poster}`} alt="poster" className=""/>}
+            {movie.Title && <h1 className="text-white font-bold text-center py-4 text-2xl">{movie.Title}</h1>}
+            <div id="details" className="">
+            {movie.Year && <h2 className="text-white">{movie.Year}</h2>}
+            <button className="text-white bg-gradient-to-r from-pink-600 to-purple-600" onClick={showDetails}>Details</button>
+            {movie.Plot && <p className="text-white ">{movie.Plot}</p>}
+            {movie.Actors && <p className="text-white "><strong>Starring: </strong>{movie.Actors}</p>}
+            {movie.Director && <p className="text-white "><strong>Directed By: </strong>{movie.Director}</p>}
+            {movie.Writer && <p className="text-white "><strong>Written By: </strong>{movie.Writer}</p>}
+            {movie.Awards && <p className="text-white "><strong>Awards: </strong>{movie.Awards}</p>}
+            {movie.Production && <p className="text-white "><strong>Production: </strong>{movie.Production}</p>}
+            {movie.BoxOffice && <p className="text-white "><strong>Box Office: </strong>{movie.BoxOffice}</p>}
+            {movie.imdbRating && <p className="text-white "><strong>Imbdb Rading: </strong>{movie.imdbRating}</p>}
+            {movie.imdbVotes && <p className="text-white "><strong>Imdb Votes: </strong>{movie.imdbVotes}</p>}
+            {movie.Type && <p className="text-white "><strong>Media Type: </strong>{movie.Type}</p>}
+            {movie.Website && <p className="text-white "><strong>Website: </strong>{movie.Website}</p>}
             </div>
         </div>
     )
